@@ -1,0 +1,4 @@
+sympy
+torch
+jax[cpu]
+jaxlib

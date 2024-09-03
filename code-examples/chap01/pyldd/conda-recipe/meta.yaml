@@ -1,0 +1,16 @@
+package:
+  name: pyldd
+  version: 0.1.0
+
+source:
+  path: ..
+
+build:
+  script: pip install --no-deps .
+
+requirements:
+  host:
+    - python
+  run:
+    - python
+    - click

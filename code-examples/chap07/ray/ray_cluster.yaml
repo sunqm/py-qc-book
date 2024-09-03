@@ -1,0 +1,23 @@
+cluster_name: dft-ray
+
+provider:
+  type: aws
+  region: us-east-1
+  availability_zone: us-east-1a
+  
+available_node_types:
+  ray.head.default:
+    node_config:
+      InstanceType: m5.xlarge
+      ImageId: ami-080e1f13689e07408
+  ray.worker.default:
+    max_workers: 3
+    node_config:
+      InstanceType: p3.2xlarge
+      ImageId: ami-0b54855df82eef3a3
+      InstanceMarketOptions:
+        MarketType: spot
+
+setup_commands: 
+  - sudo apt install -y python3-pip python-is-python3
+  - pip install ray[default] boto3 pyscf gpu4pyscf

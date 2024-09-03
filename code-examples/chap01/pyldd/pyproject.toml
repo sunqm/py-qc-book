@@ -1,0 +1,12 @@
+[project]
+name = "pyldd"
+version = "0.1.0"
+description = "Tool for inspecting Python pacakge dependencies"
+readme = "README.md"
+dependencies = [
+  "pipreqs>=0.4",
+  "click"
+]
+
+[project.scripts]
+pyldd = "pyldd.pyldd:main"

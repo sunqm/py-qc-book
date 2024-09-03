@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+service DFTCalculation {
+  rpc run_dft(DFTJobRequest) returns (DFTJobResponse) {}
+}
+
+message DFTJobRequest {
+  string geometry = 1;
+  string basis_set = 2;
+  string xc_func = 3;
+} 
+
+message DFTJobResponse {
+  double energy = 1;
+}

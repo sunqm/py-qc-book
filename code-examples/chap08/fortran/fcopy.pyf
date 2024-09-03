@@ -1,0 +1,15 @@
+python module fcopy
+  interface
+    subroutine dcopy(len, inArray, outArray)
+      integer*4,intent(in,hide),depend(inArray) :: len_bn=len(inArray)
+      real*8,dimension(len_bn),intent(in) :: inArray
+      real*8,dimension(len_bn),intent(out),depend(len_bn) :: outArray
+    end subroutine
+
+    subroutine strcopy(inStr, outStr)
+      character(*),intent(in) :: instr
+      character(len=slen(inStr)),intent(out) :: outstr
+    end subroutine
+  end interface
+end python module fcopy
+

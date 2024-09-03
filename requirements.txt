@@ -1,0 +1,15 @@
+click
+pipreqs
+setuptools
+numpy
+pandas
+matplotlib
+mpmath
+jinja2
+basis_set_exchange
+pyscf
+numba
+cffi
+pybind11
+cython
+networkx
