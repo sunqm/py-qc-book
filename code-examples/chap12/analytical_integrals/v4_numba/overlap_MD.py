@@ -15,7 +15,7 @@ def get_E_cart_components(li, lj, ai, aj, Ra, Rb):
     Kab = np.exp(-theta_ij * Rab**2)
 
     lij = li + lj
-    Et = np.empty((3, lij+1, lj+1, lij+1))
+    Et = np.empty((3, li+1, lj+1, lij+1))
     Ex, Ey, Ez = Et
     Xpa, Ypa, Zpa = Rpa
     Xpb, Ypb, Zpb = Rpb

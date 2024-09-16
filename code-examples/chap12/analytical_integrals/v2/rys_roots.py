@@ -27,13 +27,14 @@ def downward(m, t, prec=1e-15):
     b = m + half
     e = half * np.exp(-t)
     x = e
-    s = e
-    bi = b + 1
-    while x > prec:
-        x *= t / bi
-        s += x
-        bi += 1
-    f = s / b
+    f = e
+    while x > prec * e:
+        b += 1
+        x *= t / b
+        f += x
+
+    b = m + half
+    f /= b
     out = [f]
     for i in range(m):
         b -= 1

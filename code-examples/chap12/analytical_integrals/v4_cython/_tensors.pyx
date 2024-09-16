@@ -16,14 +16,14 @@ cdef double[::1] downward(int m, double t):
     cdef double b = m + half
     cdef double e = half * exp(-t)
     cdef double x = e
-    cdef double s = e
-    cdef double bi = b + 1
+    cdef double f = e
+    cdef double bi = b
     cdef double prec = 1e-15
-    while x > prec:
-        x *= t / bi
-        s += x
+    while x > prec * e:
         bi += 1
-    cdef double f = s / b
+        x *= t / bi
+        f += x
+    f /= b
     cdef double[::1] out = np.empty(m+1)
     out[m] = f
     cdef int i
