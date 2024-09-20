@@ -194,9 +194,12 @@ def primitive_ERI(li, lj, lk, ll, ai, aj, ak, al, Ra, Rb, Rc, Rd) -> np.ndarray:
     Ytheta_akl = Ypq * theta_akl
     Ztheta_akl = Zpq * theta_akl
 
-    I2dx = np.zeros((l_4+1, lkl+1, nroots))
-    I2dy = np.zeros((l_4+1, lkl+1, nroots))
-    I2dz = np.zeros((l_4+1, lkl+1, nroots))
+    I4dx = np.zeros((lij+1, lj+1, lkl+1, ll+1, nroots))
+    I4dy = np.zeros((lij+1, lj+1, lkl+1, ll+1, nroots))
+    I4dz = np.zeros((lij+1, lj+1, lkl+1, ll+1, nroots))
+    I2dx = I4dx[:,0,:,0]
+    I2dy = I4dy[:,0,:,0]
+    I2dz = I4dz[:,0,:,0]
     for n in range(nroots):
         I2dx[0,0,n] = 1.
         I2dy[0,0,n] = 1.
@@ -207,7 +210,7 @@ def primitive_ERI(li, lj, lk, ll, ai, aj, ak, al, Ra, Rb, Rc, Rd) -> np.ndarray:
             I2dx[1,0,n] = (Xpa - Xtheta_aij*rt[n]) * I2dx[0,0,n]
             I2dy[1,0,n] = (Ypa - Ytheta_aij*rt[n]) * I2dy[0,0,n]
             I2dz[1,0,n] = (Zpa - Ztheta_aij*rt[n]) * I2dz[0,0,n]
-        for i in range(1, l_4):
+        for i in range(1, lij):
             for n in range(nroots):
                 I2dx[i+1,0,n] = (Xpa - Xtheta_aij*rt[n]) * I2dx[i,0,n] + i*fac_aij*(1-theta_aij*rt[n]) * I2dx[i-1,0,n]
                 I2dy[i+1,0,n] = (Ypa - Ytheta_aij*rt[n]) * I2dy[i,0,n] + i*fac_aij*(1-theta_aij*rt[n]) * I2dy[i-1,0,n]
@@ -218,7 +221,7 @@ def primitive_ERI(li, lj, lk, ll, ai, aj, ak, al, Ra, Rb, Rc, Rd) -> np.ndarray:
             I2dx[0,1,n] = (Xqc + Xtheta_akl*rt[n]) * I2dx[0,0,n]
             I2dy[0,1,n] = (Yqc + Ytheta_akl*rt[n]) * I2dy[0,0,n]
             I2dz[0,1,n] = (Zqc + Ztheta_akl*rt[n]) * I2dz[0,0,n]
-        for i in range(1, l_4):
+        for i in range(1, lij+1):
             for n in range(nroots):
                 I2dx[i,1,n] = (Xqc + Xtheta_akl*rt[n]) * I2dx[i,0,n] + i*fac_a1*rt[n] * I2dx[i-1,0,n]
                 I2dy[i,1,n] = (Yqc + Ytheta_akl*rt[n]) * I2dy[i,0,n] + i*fac_a1*rt[n] * I2dy[i-1,0,n]
@@ -229,21 +232,11 @@ def primitive_ERI(li, lj, lk, ll, ai, aj, ak, al, Ra, Rb, Rc, Rd) -> np.ndarray:
             I2dx[0,k+1,n] = (Xqc + Xtheta_akl*rt[n]) * I2dx[0,k,n] + k*fac_akl*(1-theta_akl*rt[n]) * I2dx[0,k-1,n]
             I2dy[0,k+1,n] = (Yqc + Ytheta_akl*rt[n]) * I2dy[0,k,n] + k*fac_akl*(1-theta_akl*rt[n]) * I2dy[0,k-1,n]
             I2dz[0,k+1,n] = (Zqc + Ztheta_akl*rt[n]) * I2dz[0,k,n] + k*fac_akl*(1-theta_akl*rt[n]) * I2dz[0,k-1,n]
-        for i in range(1, l_4-k):
+        for i in range(1, lij+1):
             for n in range(nroots):
                 I2dx[i,k+1,n] = (Xqc + Xtheta_akl*rt[n]) * I2dx[i,k,n] + k*fac_akl*(1-theta_akl*rt[n]) * I2dx[i,k-1,n] + i*fac_a1*rt[n] * I2dx[i-1,k,n]
                 I2dy[i,k+1,n] = (Yqc + Ytheta_akl*rt[n]) * I2dy[i,k,n] + k*fac_akl*(1-theta_akl*rt[n]) * I2dy[i,k-1,n] + i*fac_a1*rt[n] * I2dy[i-1,k,n]
                 I2dz[i,k+1,n] = (Zqc + Ztheta_akl*rt[n]) * I2dz[i,k,n] + k*fac_akl*(1-theta_akl*rt[n]) * I2dz[i,k-1,n] + i*fac_a1*rt[n] * I2dz[i-1,k,n]
-
-    I4dx = np.zeros((lij+1, lj+1, lkl+1, ll+1, nroots))
-    I4dy = np.zeros((lij+1, lj+1, lkl+1, ll+1, nroots))
-    I4dz = np.zeros((lij+1, lj+1, lkl+1, ll+1, nroots))
-    for i in range(lij+1):
-        for k in range(lkl+1):
-            for n in range(nroots):
-                I4dx[i,0,k,0,n] = I2dx[i,k,n]
-                I4dy[i,0,k,0,n] = I2dy[i,k,n]
-                I4dz[i,0,k,0,n] = I2dz[i,k,n]
 
     Xab, Yab, Zab = Rab
     Xcd, Ycd, Zcd = Rcd

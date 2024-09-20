@@ -56,28 +56,28 @@ def primitive_ERI(li, lj, lk, ll, ai, aj, ak, al, Ra, Rb, Rc, Rd) -> np.ndarray:
     Rpa = Rp[:,None] - Ra[:,None]
     Rqc = Rq[:,None] - Rc[:,None]
 
-    trr = np.empty((l4+1,lkl+1,3,nroots))
+    trr = np.empty((lij+1,lkl+1,3,nroots))
     trr[0,0,0] = 1.
     trr[0,0,1] = 1.
     trr[0,0,2] = wt
 
-    if l4 > 0:
+    if lij > 0:
         trr[1,0] = (Rpa - Rpq*theta/aij*rt) * trr[0,0]
-        for i in range(1, l4):
+        for i in range(1, lij):
             val = (Rpa - Rpq*theta/aij*rt) * trr[i,0]
             val += i*.5/aij*(1-theta/aij*rt) * trr[i-1,0]
             trr[i+1,0] = val
 
     if lkl > 0:
         trr[0,1] = (Rqc + Rpq*theta/akl*rt) * trr[0,0]
-        for i in range(1, l4):
+        for i in range(1, lij+1):
             trr[i,1] = (Rqc + Rpq*theta/akl*rt) * trr[i,0] + i*.5/(aij+akl)*rt * trr[i-1,0]
 
     for k in range(1, lkl):
         val = (Rqc + Rpq*theta/akl*rt) * trr[0,k]
         val += k*.5/akl*(1-theta/akl*rt) * trr[0,k-1]
         trr[0,k+1] = val
-        for i in range(1, l4-k):
+        for i in range(1, lij+1):
             val = (Rqc + Rpq*theta/akl*rt) * trr[i,k]
             val += k*.5/akl*(1-theta/akl*rt) * trr[i,k-1]
             val += i*.5/(aij+akl)*rt * trr[i-1,k]
@@ -98,12 +98,9 @@ def primitive_ERI(li, lj, lk, ll, ai, aj, ak, al, Ra, Rb, Rc, Rd) -> np.ndarray:
 
     for j in range(lj):
         for i in range(lij-j):
-            for k in range(lk+1):
-                for l in range(ll+1):
-                    for n in range(nroots):
-                        I4dx[i,j+1,:lk+1,:ll+1,n] = I4dx[i+1,j,:lk+1,:ll+1,n] + Xab * I4dx[i,j,:lk+1,:ll+1,n]
-                        I4dy[i,j+1,:lk+1,:ll+1,n] = I4dy[i+1,j,:lk+1,:ll+1,n] + Yab * I4dy[i,j,:lk+1,:ll+1,n]
-                        I4dz[i,j+1,:lk+1,:ll+1,n] = I4dz[i+1,j,:lk+1,:ll+1,n] + Zab * I4dz[i,j,:lk+1,:ll+1,n]
+            I4dx[i,j+1,:lk+1,:ll+1] = I4dx[i+1,j,:lk+1,:ll+1] + Xab * I4dx[i,j,:lk+1,:ll+1]
+            I4dy[i,j+1,:lk+1,:ll+1] = I4dy[i+1,j,:lk+1,:ll+1] + Yab * I4dy[i,j,:lk+1,:ll+1]
+            I4dz[i,j+1,:lk+1,:ll+1] = I4dz[i+1,j,:lk+1,:ll+1] + Zab * I4dz[i,j,:lk+1,:ll+1]
 
     nfi = len(iter_cart_xyz(li))
     nfj = len(iter_cart_xyz(lj))
