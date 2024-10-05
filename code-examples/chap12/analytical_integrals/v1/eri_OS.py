@@ -2,7 +2,7 @@ from functools import lru_cache
 from typing import List
 import numpy as np
 from basis import CGTO, n_cart, iter_cart_xyz
-from rys_roots import boys as _boys
+from rys_roots import gamma_inc as _gamma_inc
 
 
 def contracted_ERI(bas_i, bas_j, bas_k, bas_l) -> np.ndarray:
@@ -29,8 +29,8 @@ def contracted_ERI(bas_i, bas_j, bas_k, bas_l) -> np.ndarray:
     return V
 
 @lru_cache(100)
-def boys(n, x):
-    return _boys(n, x)[n]
+def gamma_inc(n, x):
+    return _gamma_inc(n, x)[n]
 
 def primitive_ERI(li, lj, lk, ll, ai, aj, ak, al, Ra, Rb, Rc, Rd) -> np.ndarray:
     aij = ai + aj
@@ -78,7 +78,7 @@ def primitive_ERI(li, lj, lk, ll, ai, aj, ak, al, Ra, Rb, Rc, Rd) -> np.ndarray:
                 val += (ix-1)*.5/aij * (vrr(n, ix-2, iy, iz) - theta/aij*vrr(n+1, ix-2, iy, iz))
             return val
 
-        return Kabcd * boys(n, theta_r2)
+        return Kabcd * gamma_inc(n, theta_r2)
 
     @lru_cache()
     def trr(ix, iy, iz, kx, ky, kz):
@@ -193,7 +193,7 @@ def _primitive_ERI(li, lj, lk, ll, ai, aj, ak, al, Ra, Rb, Rc, Rd) -> np.ndarray
                 val += (ix-1)*.5/aij * (vrr(n, ix-2, iy, iz) - theta/aij*vrr(n+1, ix-2, iy, iz))
             return val
 
-        return Kabcd * boys(n, theta_r2)
+        return Kabcd * gamma_inc(n, theta_r2)
 
     @lru_cache()
     def trr(n, ix, iy, iz, kx, ky, kz):

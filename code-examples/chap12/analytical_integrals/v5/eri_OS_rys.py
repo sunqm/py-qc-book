@@ -6,7 +6,7 @@ import numba
 from py_qc_book.chap12.analytical_integrals.v5.basis import (
     CGTO, jitCGTO, n_cart, gto_offsets)
 from py_qc_book.chap12.analytical_integrals.v5.rys_roots import (
-    rys_roots_weights, boys_for_c)
+    rys_roots_weights, gamma_inc_for_c)
 
 liberi_OS = ctypes.CDLL(os.path.abspath(f'{__file__}/../liberi_OS.so'))
 run_eri_unrolled = liberi_OS.run_eri_unrolled
@@ -24,10 +24,10 @@ run_eri_unrolled.argtypes = [
     ctypes.c_void_p, # Rb
     ctypes.c_void_p, # Rc
     ctypes.c_void_p, # Rd
-    ctypes.c_void_p, # boys_fn
+    ctypes.c_void_p, # gamma_inc_fn
 ]
 run_eri_unrolled.restypes = ctypes.c_int
-boys_fn = boys_for_c.address
+gamma_inc_fn = gamma_inc_for_c.address
 
 @numba.njit
 def contracted_eri_jit(bas_i: jitCGTO, bas_j: jitCGTO, bas_k: jitCGTO, bas_l: jitCGTO,
@@ -67,7 +67,7 @@ def contracted_eri_jit(bas_i: jitCGTO, bas_j: jitCGTO, bas_k: jitCGTO, bas_l: ji
                         fac = ci * cj * ck * cl
                         err = run_eri_unrolled(
                             _buf, li, lj, lk, ll, ai, aj, ak, al,
-                            _Ra, _Rb, _Rc, _Rd, boys_fn)
+                            _Ra, _Rb, _Rc, _Rd, gamma_inc_fn)
                         for i in range(nfi):
                             for j in range(nfj):
                                 for k in range(nfk):
@@ -130,7 +130,7 @@ def contracted_ERI(li, lj, lk, ll, exps_i, exps_j, exps_k, exps_l,
                         fac = ci * cj * ck * cl
                         err = run_eri_unrolled(
                             _buf, li, lj, lk, ll, ai, aj, ak, al,
-                            _Ra, _Rb, _Rc, _Rd, boys_fn)
+                            _Ra, _Rb, _Rc, _Rd, gamma_inc_fn)
                         for i in range(nfi):
                             for j in range(nfj):
                                 for k in range(nfk):

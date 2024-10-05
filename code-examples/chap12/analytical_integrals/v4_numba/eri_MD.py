@@ -2,7 +2,7 @@ import numpy as np
 import numba
 from basis import jitCGTO, CGTO, n_cart
 from coulomb_1e_MD import get_R_tensor, get_E_tensor
-from rys_roots import boys
+from rys_roots import gamma_inc
 
 
 @numba.njit
@@ -86,8 +86,8 @@ def primitive_ERI(li, lj, lk, ll, ai, aj, ak, al, Ra, Rb, Rc, Rd) -> np.ndarray:
         theta_r2 = theta * Rpq.dot(Rpq)
         Kabcd = 2*np.pi**2.5/(aij*akl*(aij+akl)**.5)
         Kabcd *= np.exp(-theta_ij*Rab.dot(Rab) - theta_kl*Rcd.dot(Rcd))
-        _boys = boys(0, theta_r2)
-        return Kabcd * _boys.reshape(1,1,1,1)
+        _gamma_inc = gamma_inc(0, theta_r2)
+        return Kabcd * _gamma_inc.reshape(1,1,1,1)
 
     Rt = get_R_tensor(l4, theta, Rpq)
     nfi = n_cart(li)

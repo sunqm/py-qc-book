@@ -47,7 +47,7 @@ cdef double[::1] upward(int m, double t):
         out[i+1] = f
     return out
 
-cdef double[::1] boys(int m, double t):
+cdef double[::1] gamma_inc(int m, double t):
     assert m >= 0
     assert t >= 0
     if (t < m + 1.5):
@@ -109,7 +109,7 @@ cdef find_roots(double[:,::1] cs, int nroots):
     return roots
 
 cdef rys_roots_weights(int nroots, double x):
-    cdef double[::1] moments = boys(nroots*2, x)
+    cdef double[::1] moments = gamma_inc(nroots*2, x)
     if moments[0] < 1e-16:
         return np.zeros(nroots), np.zeros(nroots)
 
@@ -229,10 +229,10 @@ def get_R_tensor(int l, double a, double[:] rpq):
     Rt = np.zeros((l+1, l+1, l+1, l+1))
     cdef double [:,:,:,::1] _Rt = Rt
     cdef int t, u, v, m
-    cdef double[::1] _boys = boys(l, a*r2)
+    cdef double[::1] _gamma_inc = gamma_inc(l, a*r2)
 
     for m in range(l+1):
-        _Rt[m,0,0,0] = (-2*a)**m * _boys[m]
+        _Rt[m,0,0,0] = (-2*a)**m * _gamma_inc[m]
 
     if l == 0:
         return Rt[0]
@@ -299,7 +299,7 @@ def primitive_ERI_MD(int li, int lj, int lk, int ll,
         Kabcd = 2*M_PI**2.5/(aij*akl*(aij+akl)**.5)
         Kabcd *= exp(-theta_ij * square(Rab) - theta_kl * square(Rcd))
         eri = np.empty((1,1,1,1))
-        eri[0,0,0,0] = Kabcd * boys(l4, theta_r2)[0]
+        eri[0,0,0,0] = Kabcd * gamma_inc(l4, theta_r2)[0]
         return eri
 
     cdef double[:,:,::1] Rt = get_R_tensor(l4, theta, Rpq)
@@ -358,11 +358,11 @@ def primitive_ERI_OS(int li, int lj, int lk, int ll,
     cdef int lij = li + lj
     cdef int lkl = lk + ll
     cdef int n = lij + lkl
-    cdef double[::1] _boys = boys(n, theta_r2)
+    cdef double[::1] _gamma_inc = gamma_inc(n, theta_r2)
 
     if n == 0:
         out = np.empty((1,1,1,1))
-        out[0,0,0,0] = Kabcd * _boys[0]
+        out[0,0,0,0] = Kabcd * _gamma_inc[0]
         return out
 
     cdef double Xab = Rab[0]
@@ -387,7 +387,7 @@ def primitive_ERI_OS(int li, int lj, int lk, int ll,
     cdef double val
     cdef double[:,:,:,::1] vrr = np.empty((n+1, n+1,n+1,n+1))
     for ni in range(n+1):
-        vrr[ni,0,0,0] = Kabcd * _boys[ni]
+        vrr[ni,0,0,0] = Kabcd * _gamma_inc[ni]
 
     ix = 0
     iy = 0

@@ -1,7 +1,7 @@
 from typing import List
 import numpy as np
 from basis import CGTO, n_cart
-from rys_roots import boys
+from rys_roots import gamma_inc
 from overlap_MD import get_E_tensor
 
 
@@ -23,7 +23,7 @@ def get_R_tensor(l, a, rpq):
                 elif v == 1:
                     Rt[:-1,t,u,1] = rpq[2] * Rt[1:,t,u,0]
                 else: # t == u == v == 0
-                    Rt[:,0,0,0] = (-2*a)**np.arange(l*3+1) * boys(l*3, a*np.array(rpq).dot(rpq))
+                    Rt[:,0,0,0] = (-2*a)**np.arange(l*3+1) * gamma_inc(l*3, a*np.array(rpq).dot(rpq))
     return Rt[0]
 
 def get_matrix(gtos: List[CGTO], Rc) -> np.ndarray:

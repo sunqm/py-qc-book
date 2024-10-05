@@ -5,7 +5,7 @@ from basis import iter_cart_xyz
 c_tpl = jinja2.Template('''
 void {{ func_name }}(double *eri, double ai, double aj, double ak, double al,
         double *Ra, double *Rb, double *Rc, double *Rd,
-        void (*boys_fn)(int, double, double []))
+        void (*gamma_inc_fn)(int, double, double []))
 {
     extern double exp(double);
     extern double sqrt(double);
@@ -52,8 +52,8 @@ void {{ func_name }}(double *eri, double ai, double aj, double ak, double al,
     double Xtheta_akl = Xpq * theta_akl;
     double Ytheta_akl = Ypq * theta_akl;
     double Ztheta_akl = Zpq * theta_akl;
-    double _boys[32];
-    boys_fn({{ n_max+1 }}, theta_r2, _boys);
+    double _gamma_inc[32];
+    gamma_inc_fn({{ n_max+1 }}, theta_r2, _gamma_inc);
 {{ code | indent(width=4, first=True) }}
 }''')
 
@@ -95,7 +95,7 @@ def primitive_ERI(li, lj, lk, ll):
                 code.append(f'{val} += {(ix-1)*.5}/aij * (({vrr(n, ix-2, iy, iz)}) - theta_aij*({vrr(n+1, ix-2, iy, iz)}));')
             return val
 
-        code.append(f'double {val} = Kabcd * _boys[{n}];')
+        code.append(f'double {val} = Kabcd * _gamma_inc[{n}];')
         return val
 
     @lru_cache(10000)
@@ -169,7 +169,7 @@ if __name__ == '__main__':
 int run_eri_unrolled(double *eri, int li, int lj, int lk, int ll,
         double ai, double aj, double ak, double al,
         double *Ra, double *Rb, double *Rc, double *Rd,
-        void (*boys_fn)(int, double, double []))
+        void (*gamma_inc_fn)(int, double, double []))
 {
     int ijkl = li*{{ (lmax+1)**3 }} + lj*{{ (lmax+1)**2 }} + lk*{{ (lmax+1) }} + ll;
     switch (ijkl) {
@@ -179,7 +179,7 @@ int run_eri_unrolled(double *eri, int li, int lj, int lk, int ll,
 {%- for ll in range(lmax) %}
 {%- if li + lj + lk + ll <= max_roots %}
 {%- set ijkl = li*(lmax+1)**3 + lj*(lmax+1)**2 + lk*(lmax+1) + ll %}
-    case {{ ijkl }}: run_eri_{{ li }}{{ lj }}{{ lk }}{{ ll }}(eri, ai, aj, ak, al, Ra, Rb, Rc, Rd, boys_fn); break;
+    case {{ ijkl }}: run_eri_{{ li }}{{ lj }}{{ lk }}{{ ll }}(eri, ai, aj, ak, al, Ra, Rb, Rc, Rd, gamma_inc_fn); break;
 {%- endif %}
 {%- endfor %}
 {%- endfor %}

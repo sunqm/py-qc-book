@@ -2,7 +2,7 @@ import itertools
 import numpy as np
 import numba
 from basis import CGTO, n_cart
-from rys_roots import boys
+from rys_roots import gamma_inc
 
 
 def contracted_ERI(bas_i, bas_j, bas_k, bas_l) -> np.ndarray:
@@ -49,9 +49,9 @@ def primitive_ERI(li, lj, lk, ll, ai, aj, ak, al, Ra, Rb, Rc, Rd) -> np.ndarray:
     lij = li + lj
     lkl = lk + ll
     n = lij + lkl
-    _boys = boys(n, theta_r2)
+    _gamma_inc = gamma_inc(n, theta_r2)
     if n == 0:
-        return _boys[:1].reshape(1,1,1,1) * Kabcd
+        return _gamma_inc[:1].reshape(1,1,1,1) * Kabcd
 
     Xab, Yab, Zab = Rab
     Xcd, Ycd, Zcd = Rcd
@@ -59,7 +59,7 @@ def primitive_ERI(li, lj, lk, ll, ai, aj, ak, al, Ra, Rb, Rc, Rd) -> np.ndarray:
     Xpa, Ypa, Zpa = Rp - Ra
 
     vrr = np.empty((n+1, n+1,n+1,n+1))
-    vrr[:,0,0,0] = Kabcd * _boys
+    vrr[:,0,0,0] = Kabcd * _gamma_inc
     ix = 0
     iy = 0
     if n > 0:

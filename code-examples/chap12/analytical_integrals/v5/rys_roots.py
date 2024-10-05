@@ -49,7 +49,7 @@ def upward(m, t, out):
         out[i+1] = f
 
 @numba.njit(cache=True)
-def boys(m, t):
+def gamma_inc(m, t):
 #             _ 1           2
 #            /     2 m  -t u
 # F (t)  =   |    u    e      du,
@@ -65,7 +65,7 @@ def boys(m, t):
     return out
 
 @numba.cfunc('void(int32, double, CPointer(double))', nopython=True, cache=True)
-def boys_for_c(m, t, out):
+def gamma_inc_for_c(m, t, out):
 #             _ 1           2
 #            /     2 m  -t u
 # F (t)  =   |    u    e      du,
@@ -109,7 +109,7 @@ def poly_value1(a, order, x):
 
 @numba.njit(cache=True)
 def rys_roots_weights(nroots, x):
-    moments = boys(nroots*2, x)
+    moments = gamma_inc(nroots*2, x)
     if moments[0] < 1e-16:
         return np.zeros(nroots), np.zeros(nroots)
 

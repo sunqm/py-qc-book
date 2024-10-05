@@ -1,7 +1,7 @@
 from functools import lru_cache
 import numpy as np
 from basis import CGTO, n_cart, iter_cart_xyz
-from rys_roots import boys
+from rys_roots import gamma_inc
 
 def contracted_ERI(bas_i, bas_j, bas_k, bas_l) -> np.ndarray:
     li, lj = bas_i.angular_momentum, bas_j.angular_momentum
@@ -47,9 +47,9 @@ def primitive_ERI(li, lj, lk, ll, ai, aj, ak, al, Ra, Rb, Rc, Rd) -> np.ndarray:
     lij = li + lj
     lkl = lk + ll
     n = lij + lkl
-    _boys = boys(n, theta_r2)
+    _gamma_inc = gamma_inc(n, theta_r2)
     if n == 0:
-        return Kabcd * _boys.reshape(1,1,1,1)
+        return Kabcd * _gamma_inc.reshape(1,1,1,1)
 
     Xab, Yab, Zab = Rab
     Xcd, Ycd, Zcd = Rcd
@@ -57,7 +57,7 @@ def primitive_ERI(li, lj, lk, ll, ai, aj, ak, al, Ra, Rb, Rc, Rd) -> np.ndarray:
     Xpa, Ypa, Zpa = Rp - Ra
 
     vrr = np.empty((n+1, n+1,n+1,n+1))
-    vrr[:,0,0,0] = Kabcd * _boys
+    vrr[:,0,0,0] = Kabcd * _gamma_inc
     ix = 0
     iy = 0
     if n > 0:

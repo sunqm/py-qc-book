@@ -3,7 +3,7 @@ import numpy as np
 import numba
 
 @numba.njit(cache=True)
-def boys(m, t):
+def gamma_inc(m, t):
 #             _ 1           2
 #            /     2 m  -t u
 # F (t)  =   |    u    e      du,
@@ -96,7 +96,7 @@ def poly_value1(a, order, x):
 
 @numba.njit(cache=True)
 def rys_roots_weights(nroots, x):
-    moments = boys(nroots*2, x)
+    moments = gamma_inc(nroots*2, x)
     if moments[0] < 1e-16:
         return np.zeros(nroots), np.zeros(nroots)
 

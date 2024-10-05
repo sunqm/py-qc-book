@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.special
 
-def boys(m, t):
+def gamma_inc(m, t):
 #             _ 1           2
 #            /     2 m  -t u
 # F (t)  =   |    u    e      du,
@@ -73,7 +73,7 @@ def schmidt_orth(moments, nroots):
     return np.linalg.inv(np.linalg.cholesky(s))
 
 def rys_roots_weights(nroots, x):
-    moments = boys(nroots*2, x)
+    moments = gamma_inc(nroots*2, x)
     if moments[0] < 1e-16:
         return np.zeros(nroots), np.zeros(nroots)
 

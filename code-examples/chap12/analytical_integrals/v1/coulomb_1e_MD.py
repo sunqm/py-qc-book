@@ -3,19 +3,19 @@ from typing import List
 import numpy as np
 from scipy.special import roots_hermite
 from basis import CGTO, n_cart
-from rys_roots import boys as _boys
+from rys_roots import gamma_inc as _gamma_inc
 from overlap_MD import get_E_tensor
 
 
 @lru_cache(100)
-def boys(n, x):
-    return _boys(n, x)[n]
+def gamma_inc(n, x):
+    return _gamma_inc(n, x)[n]
 
 def get_R_tensor(l, a, rpq):
     @lru_cache(4000)
     def get_R(n, t, u, v):
         if t == u == v == 0:
-            return (-2*a)**n * boys(n, a*np.array(rpq).dot(rpq))
+            return (-2*a)**n * gamma_inc(n, a*np.array(rpq).dot(rpq))
         elif t < 0 or u < 0 or v < 0:
             return 0.
         elif t > 0:
